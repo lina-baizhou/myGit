@@ -117,39 +117,44 @@ public class MoneyStrory extends JFrame {
                 //-----------存钱信息------------
                 String Text = txtM.getText();
                 double balary1 = Double.parseDouble(Text);
-                UserAndAdminDao dao = new UserAndAdminDao();
+                double money=Double.parseDouble(Text);
+                if(money%100==0) {
+                    UserAndAdminDao dao = new UserAndAdminDao();
 
-                //-----------存钱记录信息----------
-                String pattern ="yyyy-MM-dd HH:mm:ss";
-                String time=new SimpleDateFormat(pattern).format(System.currentTimeMillis());
+                    //-----------存钱记录信息----------
+                    String pattern = "yyyy-MM-dd HH:mm:ss";
+                    String time = new SimpleDateFormat(pattern).format(System.currentTimeMillis());
 
-                Object[] o1 = new Object[2];
-                o1[0] = balary1;
-                o1[1] = account[0];
+                    Object[] o1 = new Object[2];
+                    o1[0] = balary1;
+                    o1[1] = account[0];
 
-                Object[] o2=new Object[3];
-                o2[0]=account[0];
-                o2[1]=balary1;
-                o2[2]=time;
-                int flat = 0;
-                try {
-                    //存入金额
-                    flat = dao.updateUser("update bankuser set balancy=balancy+? where account=?", o1);
-                    //存入数据
-                    dao.updateRecordStore("insert into storetable values(?,?,?)",o2);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
+                    Object[] o2 = new Object[3];
+                    o2[0] = account[0];
+                    o2[1] = balary1;
+                    o2[2] = time;
+                    int flat = 0;
+                    try {
+                        //存入金额
+                        flat = dao.updateUser("update bankuser set balancy=balancy+? where account=?", o1);
+                        //存入数据
+                        dao.updateRecordStore("insert into storetable values(?,?,?)", o2);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    if (flat != 0) {
+                        JOptionPane.showMessageDialog(null, "成功存入" + balary1 + "元", "", JOptionPane.CLOSED_OPTION);
+                        dispose();
+                        new UserMainMenu(account);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "存储失败", "", JOptionPane.WARNING_MESSAGE);
+                        dispose();
+                        new UserMainMenu(account);
+                    }
+                }else{
+                   JOptionPane.showMessageDialog(null,"存入的金额必须为100的整数倍！请修改！","",JOptionPane.CLOSED_OPTION);
                 }
-                if (flat != 0) {
-                    JOptionPane.showMessageDialog(null, "成功存入" + balary1 + "元", "", JOptionPane.CLOSED_OPTION);
-                    dispose();
-                    new UserMainMenu(account);
-                } else {
-                    JOptionPane.showMessageDialog(null, "存储失败", "", JOptionPane.WARNING_MESSAGE);
-                    dispose();
-                    new UserMainMenu(account);
-                }
-            }else if(e.getSource()==btnR){
+                } else if(e.getSource()==btnR){
                 dispose();
                 new UserMainMenu(account);
             }
